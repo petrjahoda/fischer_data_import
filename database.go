@@ -70,12 +70,11 @@ func (hvwZapsiZamCip) TableName() string {
 	return "hvw_zapsi_zam_cip"
 }
 
-
 type hvwZapsiArtikl struct {
-	ID       int `gorm:"column:ID"`
-	SkupZbo    string `gorm:"column:SkupZbo"`
-	RegCis       string `gorm:"column:RegCis"`
-	Nazev1      string `gorm:"column:Nazev1"`
+	ID      int    `gorm:"column:ID"`
+	SkupZbo string `gorm:"column:SkupZbo"`
+	RegCis  string `gorm:"column:RegCis"`
+	Nazev1  string `gorm:"column:Nazev1"`
 }
 
 func (hvwZapsiArtikl) TableName() string {

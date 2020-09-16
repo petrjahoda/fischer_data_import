@@ -19,7 +19,7 @@ func importData() {
 		logInfo("MAIN", "Zapsi Products: "+strconv.Itoa(len(zapsiProducts)))
 		logInfo("MAIN", "Fischer Users: "+strconv.Itoa(len(fischerUsers)))
 		logInfo("MAIN", "Fischer Products: "+strconv.Itoa(len(fischerProducts)))
-		logInfo("MAIN", "Fischer Rfids: "+strconv.Itoa(len(fischerChipsAsMap)))
+		logInfo("MAIN", "Fischer Chips: "+strconv.Itoa(len(fischerChipsAsMap)))
 		updatedUsers, createdUsers := updateUsers(zapsiUsers, fischerUsers, fischerChipsAsMap)
 		updatedProducts, createdProducts := updateProducts(zapsiProducts, fischerProducts)
 		logInfo("MAIN", "Updated users: "+strconv.Itoa(updatedUsers))

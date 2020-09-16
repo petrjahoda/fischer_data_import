@@ -27,7 +27,7 @@ Go service that downloads user and product data from Fischer database and update
 
 ### Product mapping:
     
-|CSV Name|Zapsi Name, product table|
+|Fischer Name|Zapsi Name|
 |------------------|------------------|
 |hvw_zapsi_artikl.Nazev1|product.Name|
 |PAIR hvw_zapsi_artikl.RegCis|PAIR product.Barcode|
