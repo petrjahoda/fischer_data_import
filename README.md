@@ -2,7 +2,9 @@
 
 ## Description
 Go service that downloads user and product data from Fischer database and updates/creates users, products and product
- groupsin Zapsi
+ groups in Zapsi
+ 
+ Docker image here https://hub.docker.com/repository/docker/petrjahoda/fischer_data_import_service 
 
 * Periodocity of download: 10 minutes
 * Import only users with hvw_zapsi_zam.Delnik == 1
