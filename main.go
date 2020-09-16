@@ -12,7 +12,7 @@ const downloadInSeconds = 600
 
 var serviceRunning = false
 var processRunning = false
-var zapsiConfig = "zapsi_uzivatel:zapsi@tcp(localhost:3306)/zapsi2?charset=utf8&parseTime=True&loc=Local"
+var zapsiConfig = "zapsi_uzivatel:zapsi@tcp(zapsidatabase:3306)/zapsi2?charset=utf8&parseTime=True&loc=Local"
 var fischerConfig = "sqlserver://zapsi_read:fis32zap@tcp(helios:1444)/FPCZ?database=HELIOS_fpcz"
 
 type program struct{}
