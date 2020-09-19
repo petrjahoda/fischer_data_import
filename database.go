@@ -51,7 +51,7 @@ type hvwZapsiZam struct {
 	Alias    string `gorm:"column:Alias"`
 	Jmeno    string `gorm:"column:Jmeno"`
 	Prijmeni string `gorm:"column:Prijmeni"`
-	Delnik   int    `gorm:"column:Delnik"`
+	Delnik   bool   `gorm:"column:Delnik"`
 }
 
 func (hvwZapsiZam) TableName() string {

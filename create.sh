@@ -1,5 +1,5 @@
 #!/usr/bin/env bash
-cd linux
+cd linux || exit
 upx fischer_data_import_service_linux
 cd ..
 docker rmi -f petrjahoda/fischer_data_import_service:latest

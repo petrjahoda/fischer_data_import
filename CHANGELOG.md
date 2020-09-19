@@ -14,6 +14,11 @@ adhere to [Semantic Versioning](http://semver.org/spec/v2.0.0.html) rules.
 * ```Fixed``` for any bug fixes.
 * ```Security``` in case of vulnerabilities.
 
+## [2020.3.3.19] - 2020-9-19
+
+### Changed
+- maps are created with their initial size
+
 ## [2020.3.3.16] - 2020-9-16
 
 ### Added

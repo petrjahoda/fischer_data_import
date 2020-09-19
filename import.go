@@ -20,8 +20,8 @@ func importData() {
 		logInfo("MAIN", "Fischer Users: "+strconv.Itoa(len(fischerUsers)))
 		logInfo("MAIN", "Fischer Products: "+strconv.Itoa(len(fischerProducts)))
 		logInfo("MAIN", "Fischer Chips: "+strconv.Itoa(len(fischerChipsAsMap)))
-		updatedUsers, createdUsers := updateUsers(zapsiUsers, fischerUsers, fischerChipsAsMap)
-		updatedProducts, createdProducts := updateProducts(zapsiProducts, fischerProducts)
+		updatedUsers, createdUsers := processUsers(zapsiUsers, fischerUsers, fischerChipsAsMap)
+		updatedProducts, createdProducts := processProducts(zapsiProducts, fischerProducts)
 		logInfo("MAIN", "Updated users: "+strconv.Itoa(updatedUsers))
 		logInfo("MAIN", "Created users: "+strconv.Itoa(createdUsers))
 		logInfo("MAIN", "Updated products: "+strconv.Itoa(updatedProducts))
@@ -30,24 +30,24 @@ func importData() {
 	logInfo("MAIN", "Importing process complete, time elapsed: "+time.Since(timer).String())
 }
 
-func updateProducts(zapsiProducts map[string]product, fischerProducts []hvwZapsiArtikl) (int, int) {
+func processProducts(zapsiProducts map[string]product, fischerProducts []hvwZapsiArtikl) (int, int) {
 	timer := time.Now()
-	logInfo("MAIN", "Updating products")
+	logInfo("MAIN", "Processing products")
 	updated := 0
 	created := 0
 	for _, fischerProduct := range fischerProducts {
 		if serviceRunning {
 			_, productInZapsi := zapsiProducts[fischerProduct.RegCis]
 			if productInZapsi {
-				updateProductInZapsi(fischerProduct)
+				//updateProductInZapsi(fischerProduct)
 				updated++
 			} else {
-				createProductInZapsi(fischerProduct)
+				//createProductInZapsi(fischerProduct)
 				created++
 			}
 		}
 	}
-	logInfo("MAIN", "Products updated, time elapsed: "+time.Since(timer).String())
+	logInfo("MAIN", "Products processed, time elapsed: "+time.Since(timer).String())
 	return updated, created
 }
 
@@ -110,9 +110,9 @@ func getProductGroupId(fischerProduct hvwZapsiArtikl) int {
 	return 1
 }
 
-func updateUsers(zapsiUsers map[string]user, fischerUsers []hvwZapsiZam, fischerChipsAsMap map[string]hvwZapsiZamCip) (int, int) {
+func processUsers(zapsiUsers map[string]user, fischerUsers []hvwZapsiZam, fischerChipsAsMap map[string]hvwZapsiZamCip) (int, int) {
 	timer := time.Now()
-	logInfo("MAIN", "Updating users")
+	logInfo("MAIN", "Processing users")
 	updated := 0
 	created := 0
 	for _, fischerUser := range fischerUsers {
@@ -127,7 +127,7 @@ func updateUsers(zapsiUsers map[string]user, fischerUsers []hvwZapsiZam, fischer
 			}
 		}
 	}
-	logInfo("MAIN", "Users updated, time elapsed: "+time.Since(timer).String())
+	logInfo("MAIN", "Users processed, time elapsed: "+time.Since(timer).String())
 	return updated, created
 }
 
@@ -139,9 +139,9 @@ func updateUserInZapsi(fischerUser hvwZapsiZam, zapsiUser user, fischerChipsAsMa
 	}
 	sqlDB, err := db.DB()
 	defer sqlDB.Close()
-	userChip := fischerChipsAsMap[fischerUser.Alias]
+	userChip, exists := fischerChipsAsMap[fischerUser.Alias]
 	var rfidToInsert = ""
-	if userChip.Primarni == 1 {
+	if userChip.Primarni == 1 && exists {
 		rfidToInsert = userChip.CC
 	}
 	db.Model(&user{}).Where(user{Login: zapsiUser.Login}).Updates(user{
@@ -162,9 +162,9 @@ func createUserInZapsi(fischerUser hvwZapsiZam, fischerChipsAsMap map[string]hvw
 	}
 	sqlDB, err := db.DB()
 	defer sqlDB.Close()
-	userChip := fischerChipsAsMap[fischerUser.Alias]
+	userChip, exists := fischerChipsAsMap[fischerUser.Alias]
 	var rfidToInsert = ""
-	if userChip.Primarni == 1 {
+	if userChip.Primarni == 1 && exists {
 		rfidToInsert = userChip.CC
 	}
 	var user user
@@ -182,12 +182,10 @@ func createUserInZapsi(fischerUser hvwZapsiZam, fischerChipsAsMap map[string]hvw
 func downloadDataFromFischer() ([]hvwZapsiZam, []hvwZapsiArtikl, map[string]hvwZapsiZamCip, bool) {
 	timer := time.Now()
 	logInfo("MAIN", "Downloading data from Zapsi")
-	var fischerChipsAsMap map[string]hvwZapsiZamCip
-	fischerChipsAsMap = make(map[string]hvwZapsiZamCip)
 	db, err := gorm.Open(sqlserver.Open(fischerConfig), &gorm.Config{})
 	if err != nil {
 		logError("MAIN", "Problem opening database: "+err.Error())
-		return []hvwZapsiZam{}, []hvwZapsiArtikl{}, fischerChipsAsMap, false
+		return nil, nil, nil, false
 	}
 	sqlDB, err := db.DB()
 	defer sqlDB.Close()
@@ -196,7 +194,8 @@ func downloadDataFromFischer() ([]hvwZapsiZam, []hvwZapsiArtikl, map[string]hvwZ
 	var chips []hvwZapsiZamCip
 	db.Where("Delnik = ?", 1).Find(&users)
 	db.Find(&products)
-	db.Find(&chips)
+	db.Where("Primarni = ?", 1).Find(&chips)
+	fischerChipsAsMap := make(map[string]hvwZapsiZamCip, len(chips))
 	for _, chip := range chips {
 		fischerChipsAsMap[chip.Alias] = chip
 	}
@@ -208,13 +207,10 @@ func downloadDataFromZapsi() (map[string]user, map[string]product, bool) {
 	timer := time.Now()
 	logInfo("MAIN", "Downloading data from Zapsi")
 	db, err := gorm.Open(mysql.Open(zapsiConfig), &gorm.Config{})
-	var returnProducts map[string]product
-	var returnUsers map[string]user
-	returnProducts = make(map[string]product)
-	returnUsers = make(map[string]user)
+
 	if err != nil {
 		logError("MAIN", "Problem opening database: "+err.Error())
-		return returnUsers, returnProducts, false
+		return nil, nil, false
 	}
 	sqlDB, err := db.DB()
 	defer sqlDB.Close()
@@ -222,6 +218,8 @@ func downloadDataFromZapsi() (map[string]user, map[string]product, bool) {
 	var products []product
 	db.Find(&users)
 	db.Find(&products)
+	returnProducts := make(map[string]product, len(products))
+	returnUsers := make(map[string]user, len(users))
 	for _, product := range products {
 		returnProducts[product.Barcode] = product
 	}

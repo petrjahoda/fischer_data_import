@@ -5,7 +5,7 @@ import (
 	"time"
 )
 
-const version = "2020.3.3.16"
+const version = "2020.3.3.19"
 const serviceName = "Fischer Data Import Service"
 const serviceDescription = "Download users, products and product groups from Fischer mssql database and imports them into Zapsi mysql database"
 const downloadInSeconds = 600
@@ -13,7 +13,7 @@ const downloadInSeconds = 600
 var serviceRunning = false
 var processRunning = false
 var zapsiConfig = "zapsi_uzivatel:zapsi@tcp(zapsidatabase:3306)/zapsi2?charset=utf8&parseTime=True&loc=Local"
-var fischerConfig = "sqlserver://zapsi_read:fis32zap@helios:1444/FPCZ?database=HELIOS_fpcz"
+var fischerConfig = "sqlserver://zapsi_read:fis32zap@10.193.21.37:1444/FPCZ?database=HELIOS_fpcz"
 
 type program struct{}
 
