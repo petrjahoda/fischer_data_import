@@ -55,12 +55,12 @@ func createProductInZapsi(fischerProduct hvwZapsiArtikl) {
 	logInfo("MAIN", fischerProduct.Nazev1+": Product does not exist in Zapsi, creating...")
 	productGroupId := getProductGroupId(fischerProduct)
 	db, err := gorm.Open(mysql.Open(zapsiConfig), &gorm.Config{})
+	sqlDB, _ := db.DB()
+	defer sqlDB.Close()
 	if err != nil {
 		logError("MAIN", "Problem opening database: "+err.Error())
 		return
 	}
-	sqlDB, err := db.DB()
-	defer sqlDB.Close()
 	var product product
 	product.Name = fischerProduct.Nazev1
 	product.Barcode = fischerProduct.RegCis
@@ -72,12 +72,12 @@ func createProductInZapsi(fischerProduct hvwZapsiArtikl) {
 func updateProductInZapsi(fischerProduct hvwZapsiArtikl) {
 	productGroupId := getProductGroupId(fischerProduct)
 	db, err := gorm.Open(mysql.Open(zapsiConfig), &gorm.Config{})
+	sqlDB, _ := db.DB()
+	defer sqlDB.Close()
 	if err != nil {
 		logError("MAIN", "Problem opening database: "+err.Error())
 		return
 	}
-	sqlDB, err := db.DB()
-	defer sqlDB.Close()
 
 	db.Model(&product{}).Where(user{Barcode: fischerProduct.RegCis}).Updates(product{
 		Name:           fischerProduct.Nazev1,
@@ -87,12 +87,12 @@ func updateProductInZapsi(fischerProduct hvwZapsiArtikl) {
 
 func getProductGroupId(fischerProduct hvwZapsiArtikl) int {
 	db, err := gorm.Open(mysql.Open(zapsiConfig), &gorm.Config{})
+	sqlDB, _ := db.DB()
+	defer sqlDB.Close()
 	if err != nil {
 		logError("MAIN", "Problem opening database: "+err.Error())
 		return 1
 	}
-	sqlDB, err := db.DB()
-	defer sqlDB.Close()
 	var existingProductGroup productGroup
 	db.Where("Name like ?", fischerProduct.SkupZbo).Find(&existingProductGroup)
 	if existingProductGroup.OID > 0 {
@@ -119,10 +119,10 @@ func processUsers(zapsiUsers map[string]user, fischerUsers []hvwZapsiZam, fische
 		if serviceRunning {
 			_, userInZapsi := zapsiUsers[fischerUser.Alias]
 			if userInZapsi {
-				updateUserInZapsi(fischerUser, zapsiUsers[fischerUser.Alias], fischerChipsAsMap)
+				//updateUserInZapsi(fischerUser, zapsiUsers[fischerUser.Alias], fischerChipsAsMap)
 				updated++
 			} else {
-				createUserInZapsi(fischerUser, fischerChipsAsMap)
+				//createUserInZapsi(fischerUser, fischerChipsAsMap)
 				created++
 			}
 		}
@@ -133,12 +133,12 @@ func processUsers(zapsiUsers map[string]user, fischerUsers []hvwZapsiZam, fische
 
 func updateUserInZapsi(fischerUser hvwZapsiZam, zapsiUser user, fischerChipsAsMap map[string]hvwZapsiZamCip) {
 	db, err := gorm.Open(mysql.Open(zapsiConfig), &gorm.Config{})
+	sqlDB, _ := db.DB()
+	defer sqlDB.Close()
 	if err != nil {
 		logError("MAIN", "Problem opening database: "+err.Error())
 		return
 	}
-	sqlDB, err := db.DB()
-	defer sqlDB.Close()
 	userChip, exists := fischerChipsAsMap[fischerUser.Alias]
 	var rfidToInsert = ""
 	if userChip.Primarni == 1 && exists {
@@ -156,12 +156,12 @@ func updateUserInZapsi(fischerUser hvwZapsiZam, zapsiUser user, fischerChipsAsMa
 func createUserInZapsi(fischerUser hvwZapsiZam, fischerChipsAsMap map[string]hvwZapsiZamCip) {
 	logInfo("MAIN", fischerUser.Jmeno+","+fischerUser.Prijmeni+": User does not exist in Zapsi, creating...")
 	db, err := gorm.Open(mysql.Open(zapsiConfig), &gorm.Config{})
+	sqlDB, _ := db.DB()
+	defer sqlDB.Close()
 	if err != nil {
 		logError("MAIN", "Problem opening database: "+err.Error())
 		return
 	}
-	sqlDB, err := db.DB()
-	defer sqlDB.Close()
 	userChip, exists := fischerChipsAsMap[fischerUser.Alias]
 	var rfidToInsert = ""
 	if userChip.Primarni == 1 && exists {
@@ -183,12 +183,12 @@ func downloadDataFromFischer() ([]hvwZapsiZam, []hvwZapsiArtikl, map[string]hvwZ
 	timer := time.Now()
 	logInfo("MAIN", "Downloading data from Zapsi")
 	db, err := gorm.Open(sqlserver.Open(fischerConfig), &gorm.Config{})
+	sqlDB, _ := db.DB()
+	defer sqlDB.Close()
 	if err != nil {
 		logError("MAIN", "Problem opening database: "+err.Error())
 		return nil, nil, nil, false
 	}
-	sqlDB, err := db.DB()
-	defer sqlDB.Close()
 	var users []hvwZapsiZam
 	var products []hvwZapsiArtikl
 	var chips []hvwZapsiZamCip
@@ -207,13 +207,12 @@ func downloadDataFromZapsi() (map[string]user, map[string]product, bool) {
 	timer := time.Now()
 	logInfo("MAIN", "Downloading data from Zapsi")
 	db, err := gorm.Open(mysql.Open(zapsiConfig), &gorm.Config{})
-
+	sqlDB, _ := db.DB()
+	defer sqlDB.Close()
 	if err != nil {
 		logError("MAIN", "Problem opening database: "+err.Error())
 		return nil, nil, false
 	}
-	sqlDB, err := db.DB()
-	defer sqlDB.Close()
 	var users []user
 	var products []product
 	db.Find(&users)
