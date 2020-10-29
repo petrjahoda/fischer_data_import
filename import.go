@@ -119,10 +119,10 @@ func processUsers(zapsiUsers map[string]user, fischerUsers []hvwZapsiZam, fische
 		if serviceRunning {
 			_, userInZapsi := zapsiUsers[fischerUser.Alias]
 			if userInZapsi {
-				//updateUserInZapsi(fischerUser, zapsiUsers[fischerUser.Alias], fischerChipsAsMap)
+				updateUserInZapsi(fischerUser, zapsiUsers[fischerUser.Alias], fischerChipsAsMap)
 				updated++
 			} else {
-				//createUserInZapsi(fischerUser, fischerChipsAsMap)
+				createUserInZapsi(fischerUser, fischerChipsAsMap)
 				created++
 			}
 		}
