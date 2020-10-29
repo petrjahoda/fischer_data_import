@@ -39,10 +39,10 @@ func processProducts(zapsiProducts map[string]product, fischerProducts []hvwZaps
 		if serviceRunning {
 			_, productInZapsi := zapsiProducts[fischerProduct.RegCis]
 			if productInZapsi {
-				//updateProductInZapsi(fischerProduct)
+				updateProductInZapsi(fischerProduct)
 				updated++
 			} else {
-				//createProductInZapsi(fischerProduct)
+				createProductInZapsi(fischerProduct)
 				created++
 			}
 		}

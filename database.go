@@ -31,7 +31,6 @@ type product struct {
 	ProductStatusID int     `gorm:"column:ProductStatusID"`
 	Deleted         int     `gorm:"column:Deleted"`
 	ProductGroupID  int     `gorm:"column:ProductGroupID"`
-	Cavity          int     `gorm:"column:Cavity"`
 }
 
 func (product) TableName() string {
