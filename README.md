@@ -36,7 +36,7 @@ Go service that downloads user and product data from Fischer database and update
 |always insert 1|product.ProductStatusID|
 |nothing|product.Deleted|
 |proper productGroupId|product.ProductGroupID|
-|nothing|product.Cavity|
+|hvw_zapsi_artikl.ID|product.Cavity|
 
 
 © 2020 Petr Jahoda
