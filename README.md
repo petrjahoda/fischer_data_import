@@ -31,12 +31,12 @@ Go service that downloads user and product data from Fischer database and update
 |------------------|------------------|
 |hvw_zapsi_artikl.Nazev1|product.Name|
 |PAIR hvw_zapsi_artikl.RegCis|PAIR product.Barcode|
-|nothing|product.Cycle|
+|hvw_zapsi_artikl.ID|product.Cycle|
 |nothing|product.IdleFromTime|
 |always insert 1|product.ProductStatusID|
 |nothing|product.Deleted|
 |proper productGroupId|product.ProductGroupID|
-|hvw_zapsi_artikl.ID|product.Cavity|
+|nothing|product.Cavity|
 
 
 © 2020 Petr Jahoda
