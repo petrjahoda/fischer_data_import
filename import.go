@@ -83,6 +83,7 @@ func updateProductInZapsi(fischerProduct hvwZapsiArtikl) {
 	db.Model(&product{}).Where(user{Barcode: fischerProduct.RegCis}).Updates(product{
 		Name:           fischerProduct.Nazev1,
 		ProductGroupID: productGroupId,
+		Cycle:          float64(fischerProduct.ID),
 	})
 }
 
