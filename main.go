@@ -5,7 +5,7 @@ import (
 	"time"
 )
 
-const version = "2020.4.2.14"
+const version = "2020.4.2.19"
 const serviceName = "Fischer Data Import Service"
 const serviceDescription = "Download users, products and product groups from Fischer mssql database and imports them into Zapsi mysql database"
 const downloadInSeconds = 600

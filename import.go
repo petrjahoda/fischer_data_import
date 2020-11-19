@@ -66,6 +66,7 @@ func createProductInZapsi(fischerProduct hvwZapsiArtikl) {
 	product.Barcode = fischerProduct.RegCis
 	product.ProductGroupID = productGroupId
 	product.ProductStatusID = 1
+	product.Cycle = float64(fischerProduct.ID)
 	db.Save(&product)
 }
 
