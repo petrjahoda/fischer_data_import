@@ -147,11 +147,9 @@ func updateUserInZapsi(fischerUser hvwZapsiZam, zapsiUser user, fischerChipsAsMa
 		rfidToInsert = userChip.CC
 	}
 	db.Model(&user{}).Where(user{Login: zapsiUser.Login}).Updates(user{
-		FirstName:  fischerUser.Jmeno,
-		Name:       fischerUser.Prijmeni,
-		Rfid:       rfidToInsert,
-		UserTypeID: sql.NullInt32{Int32: 1, Valid: true},
-		UserRoleID: sql.NullInt32{Int32: 2, Valid: true},
+		FirstName: fischerUser.Jmeno,
+		Name:      fischerUser.Prijmeni,
+		Rfid:      rfidToInsert,
 	})
 }
 

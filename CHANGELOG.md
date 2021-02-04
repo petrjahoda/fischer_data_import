@@ -14,6 +14,10 @@ adhere to [Semantic Versioning](http://semver.org/spec/v2.0.0.html) rules.
 * ```Fixed``` for any bug fixes.
 * ```Security``` in case of vulnerabilities.
 
+## [2021.1.2.4] - 2021-02-04
+
+### Changed
+- removed updating userTypeId and userRoleId
 
 ## [2020.4.2.19] - 2020-11-19
 
